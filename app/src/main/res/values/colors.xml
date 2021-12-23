@@ -9,4 +9,6 @@
     <color name="black">#FF000000</color>
 
     <color name="themeColor">#2E8B57</color>
+    <color name="red">#FF3030</color>
+    <color name="gray">#CDC9C9</color>
 </resources>
