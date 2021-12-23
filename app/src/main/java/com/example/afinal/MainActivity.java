@@ -47,11 +47,15 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
     private long firstTime = 0;
-    //新闻列表请求接口
-    public static final String URL="http://v.juhe.cn/toutiao/index?type=top&key=ec843df065104133ec05a00323de73f9";
     private ListView listView;
-    private List<NewsData> datas;
-    private MyAdapter adapter;
+    //新闻列表请求接口
+    public static final String NewsURL="http://v.juhe.cn/toutiao/index?type=top&key=ec843df065104133ec05a00323de73f9";
+    private List<NewsData> newsData;
+    private NewsAdapter newsAdapter;
+    //商城
+    private List<GoodsData> goodsData;
+    private GoodsAdapter goodsAdapter;
+    //主页
     private Fragment homepage_fragment;
     private Fragment[] fragments;
     private int lastfragment;//用于记录上个选择的Fragment
@@ -71,10 +75,10 @@ public class MainActivity extends AppCompatActivity {
                 //创建一个意图
                 Intent intent = new Intent(MainActivity.this,NewsInfoActivity.class);
                 //在datas中通过点击的位置position通过get()方法获得具体某个新闻的数据然后通过Intent的putExtra()传递到NewsInfoActivity中
-                intent.putExtra("newsTitle", datas.get(position).getNewsTitle());
-                intent.putExtra("newsDate", datas.get(position).getNewsDate());
-                intent.putExtra("newsImgUrl", datas.get(position).getNewsImgUrl());
-                intent.putExtra("newsUrl", datas.get(position).getNewsUrl());
+                intent.putExtra("newsTitle", newsData.get(position).getNewsTitle());
+                intent.putExtra("newsDate", newsData.get(position).getNewsDate());
+                intent.putExtra("newsImgUrl", newsData.get(position).getNewsImgUrl());
+                intent.putExtra("newsUrl", newsData.get(position).getNewsUrl());
                 MainActivity.this.startActivity(intent);//启动Activity
             }
         });
@@ -101,6 +105,15 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    public void getGoods(){
+        for(int i=0;i<10;i++){
+            GoodsData data=new GoodsData();
+            data.setGoodsName("待取名");
+            data.setGoodsPrice("999");
+            data.setGoodsImgUrl("@drawable/find.png");
+            goodsData.add(data);
+        }
+    }
     public void getDatas(String url){
         final RequestQueue mQueue= Volley.newRequestQueue(this);
         JsonObjectRequest stringRequest=new JsonObjectRequest(url, null,
@@ -117,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                                 data.setNewsDate(item.getString("date"));
                                 data.setNewsImgUrl(item.getString("thumbnail_pic_s"));
                                 data.setNewsUrl(item.getString("url"));
-                                datas.add(data);
+                                newsData.add(data);
                                 Log.v("1",item.getString("title"));
                             }
                         } catch (JSONException e) {
@@ -220,11 +233,15 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        //新闻速递
         listView=(ListView) this.findViewById(R.id.list_view_main);
-        datas=new ArrayList<NewsData>();
-        getDatas(URL);
-        adapter=new MyAdapter(this,datas);
+        //新闻速递
+        newsData=new ArrayList<NewsData>();
+        getDatas(NewsURL);
+        newsAdapter=new NewsAdapter(this,newsData);
+        //商城
+        goodsData=new ArrayList<GoodsData>();
+        getGoods();
+        goodsAdapter=new GoodsAdapter(this,goodsData);
 
         //fragment主要操作
         homepage_fragment = new HomepageFragment();
@@ -242,6 +259,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()){
                     case R.id.homepage:
                         toolbar.setTitle("主页");
+                        listView.setVisibility(View.GONE);
                         if(lastfragment != 0){
                             switchFragment(lastfragment,0);
                             lastfragment = 0;
@@ -249,16 +267,19 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.store:
                         toolbar.setTitle("商城");
-//                        listView.setAdapter(new adapterMain(MainActivity.this,R.layout.list_main,recycle));
+                        listView.setVisibility(View.VISIBLE);
+                        listView.setAdapter(goodsAdapter);
+                        goodsAdapter.notifyDataSetChanged();
                         break;
                     case R.id.find:
                         toolbar.setTitle("新闻速递");
-                        listView.setAdapter(adapter);
-                        adapter.notifyDataSetChanged();
+                        listView.setVisibility(View.VISIBLE);
+                        listView.setAdapter(newsAdapter);
+                        newsAdapter.notifyDataSetChanged();
                         break;
                     case R.id.mine:
                         toolbar.setTitle("个人中心");
-//                        listView.setAdapter(new adapterMain(MainActivity.this,R.layout.list_main,others));
+                        listView.setVisibility(View.GONE);
                         break;
                 }
                 return true;
