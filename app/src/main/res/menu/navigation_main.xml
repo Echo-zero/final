@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/homepage"
+        android:icon="@drawable/ic_homepage"
+        android:title="@string/homepage"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/store"
+        android:icon="@drawable/ic_store"
+        android:title="@string/store"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/find"
+        android:icon="@drawable/ic_find"
+        android:title="@string/find"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/mine"
+        android:icon="@drawable/ic_perm_identity_black_48dp"
+        android:title="@string/mine"
+        app:showAsAction="ifRoom"/>
+
+</menu>
