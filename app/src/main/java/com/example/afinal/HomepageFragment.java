@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 public class HomepageFragment extends Fragment {
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.homepage_fragment, null);
@@ -42,4 +43,5 @@ public class HomepageFragment extends Fragment {
         });
 
     }
+
 }
