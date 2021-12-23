@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     //新闻列表请求接口
     public static final String URL="http://v.juhe.cn/toutiao/index?type=top&key=ec843df065104133ec05a00323de73f9";
     private ListView listView;
+    //新闻数据
     private List<NewsData> datas;
     private MyAdapter adapter;
 
