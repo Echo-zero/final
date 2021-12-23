@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -50,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
     private ListView listView;
     private List<NewsData> datas;
     private MyAdapter adapter;
+    private Fragment homepage_fragment;
+    private Fragment[] fragments;
+    private int lastfragment;//用于记录上个选择的Fragment
 
     public MainActivity() {
     }
@@ -221,6 +226,12 @@ public class MainActivity extends AppCompatActivity {
         getDatas(URL);
         adapter=new MyAdapter(this,datas);
 
+        //fragment主要操作
+        homepage_fragment = new HomepageFragment();
+        fragments = new Fragment[]{homepage_fragment};
+        lastfragment = 0;
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragments, homepage_fragment).show(homepage_fragment).commit();
+
         //初始界面content_main.xml
         //点击跳转页面
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -231,7 +242,10 @@ public class MainActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()){
                     case R.id.homepage:
                         toolbar.setTitle("主页");
-//                        listView.setAdapter(new adapterMain(MainActivity.this,R.layout.list_main,kitchen));
+                        if(lastfragment != 0){
+                            switchFragment(lastfragment,0);
+                            lastfragment = 0;
+                        }
                         break;
                     case R.id.store:
                         toolbar.setTitle("商城");
@@ -250,6 +264,17 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+    }
+
+    //切换Fragment
+    private void switchFragment(int lastfragment, int index) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.hide(fragments[lastfragment]);//隐藏上个Fragment
+        if (fragments[index].isAdded() == false) {
+            transaction.add(R.id.frame_fragments, fragments[index]);
+        }
+        transaction.show(fragments[index]).commitAllowingStateLoss();
 
     }
 }
