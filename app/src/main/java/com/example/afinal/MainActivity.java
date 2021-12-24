@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private GoodsAdapter goodsAdapter;
     //主页
     private Fragment homepage_fragment;
+    private Fragment mine_fragment;
     private Fragment[] fragments;
     private int lastfragment;//用于记录上个选择的Fragment
 
@@ -245,7 +246,8 @@ public class MainActivity extends AppCompatActivity {
 
         //fragment主要操作
         homepage_fragment = new HomepageFragment();
-        fragments = new Fragment[]{homepage_fragment};
+        mine_fragment = new MineFragment();
+        fragments = new Fragment[]{homepage_fragment,mine_fragment};
         lastfragment = 0;
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragments, homepage_fragment).show(homepage_fragment).commit();
 
@@ -256,23 +258,24 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
                 switch (menuItem.getItemId()){
                     case R.id.homepage:
                         toolbar.setTitle("主页");
                         listView.setVisibility(View.GONE);
-                        if(lastfragment != 0){
-                            switchFragment(lastfragment,0);
-                            lastfragment = 0;
-                        }
+                        switchFragment(lastfragment,0);
+                        lastfragment = 0;
                         break;
                     case R.id.store:
                         toolbar.setTitle("商城");
+                        getSupportFragmentManager().beginTransaction().hide(fragments[lastfragment]).commit();//隐藏上个Fragment
                         listView.setVisibility(View.VISIBLE);
                         listView.setAdapter(goodsAdapter);
                         goodsAdapter.notifyDataSetChanged();
                         break;
                     case R.id.find:
                         toolbar.setTitle("新闻速递");
+                        getSupportFragmentManager().beginTransaction().hide(fragments[lastfragment]).commit();//隐藏上个Fragment
                         listView.setVisibility(View.VISIBLE);
                         listView.setAdapter(newsAdapter);
                         newsAdapter.notifyDataSetChanged();
@@ -280,6 +283,8 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.mine:
                         toolbar.setTitle("个人中心");
                         listView.setVisibility(View.GONE);
+                        switchFragment(lastfragment,1);
+                        lastfragment = 1;
                         break;
                 }
                 return true;
@@ -291,11 +296,16 @@ public class MainActivity extends AppCompatActivity {
     //切换Fragment
     private void switchFragment(int lastfragment, int index) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.hide(fragments[lastfragment]);//隐藏上个Fragment
-        if (fragments[index].isAdded() == false) {
-            transaction.add(R.id.frame_fragments, fragments[index]);
+        if(lastfragment != index){
+            transaction.hide(fragments[lastfragment]);//隐藏上个Fragment
+            if (fragments[index].isAdded() == false) {
+                transaction.add(R.id.frame_fragments, fragments[index]);
+            }
+            transaction.show(fragments[index]).commit();
         }
-        transaction.show(fragments[index]).commitAllowingStateLoss();
+        else{
+            transaction.show(fragments[index]).commit();
+        }
 
     }
 }
