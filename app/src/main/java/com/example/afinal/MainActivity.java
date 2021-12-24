@@ -55,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
     //商城
     private List<GoodsData> goodsData;
     private GoodsAdapter goodsAdapter;
+    public static String name[]=new String[]{"牛肉粒","薄脆饼干","咸蛋黄拌面","猪肉条","坚果","葡萄干","山楂条","桃酥","瓜子仁","美式薯条","炒蚕豆","奥尔良鸡腿","香辣鱼块","泡椒凤爪"};
+    public static String price[]=new String[]{"20积分","30积分","16积分","30积分","11积分","25积分","20积分","25积分","20积分","20积分","15积分","20积分","17积分","19积分"};
+    public static int ImgUrl[]=new int[]{R.drawable.a,R.drawable.b,R.drawable.c,R.drawable.d,R.drawable.e,R.drawable.f,R.drawable.g,R.drawable.h,R.drawable.i,R.drawable.j,R.drawable.k,R.drawable.l,R.drawable.m,R.drawable.n,};
     //主页
     private Fragment homepage_fragment;
     private Fragment mine_fragment;
@@ -69,20 +72,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initLayout();
-        //添加新闻item点击进入详情
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-                //创建一个意图
-                Intent intent = new Intent(MainActivity.this,NewsInfoActivity.class);
-                //在datas中通过点击的位置position通过get()方法获得具体某个新闻的数据然后通过Intent的putExtra()传递到NewsInfoActivity中
-                intent.putExtra("newsTitle", newsData.get(position).getNewsTitle());
-                intent.putExtra("newsDate", newsData.get(position).getNewsDate());
-                intent.putExtra("newsImgUrl", newsData.get(position).getNewsImgUrl());
-                intent.putExtra("newsUrl", newsData.get(position).getNewsUrl());
-                MainActivity.this.startActivity(intent);//启动Activity
-            }
-        });
     }
 
     @Override
@@ -107,14 +96,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getGoods(){
-        for(int i=0;i<10;i++){
+        for(int i=0;i<14;i++){
             GoodsData data=new GoodsData();
-            data.setGoodsName("待取名");
-            data.setGoodsPrice("999");
-            data.setGoodsImgUrl("@drawable/find.png");
+            data.setGoodsName(name[i]);
+            data.setGoodsPrice(price[i]);
+            data.setGoodsImgUrl(ImgUrl[i]);
             goodsData.add(data);
         }
     }
+
     public void getDatas(String url){
         final RequestQueue mQueue= Volley.newRequestQueue(this);
         JsonObjectRequest stringRequest=new JsonObjectRequest(url, null,
@@ -272,6 +262,11 @@ public class MainActivity extends AppCompatActivity {
                         listView.setVisibility(View.VISIBLE);
                         listView.setAdapter(goodsAdapter);
                         goodsAdapter.notifyDataSetChanged();
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            }
+                        });
                         break;
                     case R.id.find:
                         toolbar.setTitle("新闻速递");
@@ -279,6 +274,20 @@ public class MainActivity extends AppCompatActivity {
                         listView.setVisibility(View.VISIBLE);
                         listView.setAdapter(newsAdapter);
                         newsAdapter.notifyDataSetChanged();
+                        //添加新闻item点击进入详情
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                                //创建一个意图
+                                Intent intent = new Intent(MainActivity.this,NewsInfoActivity.class);
+                                //在datas中通过点击的位置position通过get()方法获得具体某个新闻的数据然后通过Intent的putExtra()传递到NewsInfoActivity中
+                                intent.putExtra("newsTitle", newsData.get(position).getNewsTitle());
+                                intent.putExtra("newsDate", newsData.get(position).getNewsDate());
+                                intent.putExtra("newsImgUrl", newsData.get(position).getNewsImgUrl());
+                                intent.putExtra("newsUrl", newsData.get(position).getNewsUrl());
+                                MainActivity.this.startActivity(intent);//启动Activity
+                            }
+                        });
                         break;
                     case R.id.mine:
                         toolbar.setTitle("个人中心");
