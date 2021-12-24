@@ -1,7 +1,7 @@
 package com.example.afinal;
 
 public class GoodsData {
-    private String goodsImgUrl;
+    private int goodsImgUrl;
     private String goodsName;
     private String goodsPrice;
 
@@ -17,10 +17,10 @@ public class GoodsData {
     public void setGoodsPrice(String s){
         this.goodsPrice=s;
     }
-    public String getGoodsImgUrl(){
+    public int getGoodsImgUrl(){
         return this.goodsImgUrl;
     }
-    public void setGoodsImgUrl(String s){
+    public void setGoodsImgUrl(int s){
         this.goodsImgUrl=s;
     }
 }
